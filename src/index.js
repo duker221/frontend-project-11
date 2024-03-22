@@ -1,2 +1,4 @@
-import './styles.scss';
-import 'bootstrap';
+import "./styles.scss";
+import "bootstrap";
+
+console.log("sucess!");
