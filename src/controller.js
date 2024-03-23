@@ -1,6 +1,5 @@
 import { watchedState } from "./state.js";
 import { validateUrl } from "./validateUrl.js";
-
 export default () => {
   watchedState.form.url = "";
   watchedState.form.valid = true;
@@ -28,7 +27,7 @@ export default () => {
       })
       .catch((error) => {
         watchedState.form.valid = false;
-        watchedState.form.errors.push("Ссылка должна быть валидным URL");
+        watchedState.form.error = "Ссылка должна быть валидным URL";
         console.error("Ошибка валидации:", error.message);
         console.log(watchedState);
       });
