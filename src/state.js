@@ -1,9 +1,9 @@
-import onChange from "on-change";
-import { render } from "./view.js";
+import onChange from 'on-change';
+import { render } from './view.js';
 
 const state = {
   form: {
-    url: "",
+    url: '',
     valid: true,
     feeds: [],
     errors: [],
@@ -11,7 +11,7 @@ const state = {
 };
 
 const watchedState = onChange(state, (path, value, previousValue) => {
-  if (path.startsWith("form")) {
+  if (path.startsWith('form')) {
     render(watchedState);
   }
 });

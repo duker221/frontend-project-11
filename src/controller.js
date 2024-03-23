@@ -1,17 +1,18 @@
-import { watchedState } from "./state.js";
-import { validateUrl } from "./validateUrl.js";
+import { watchedState } from './state.js';
+import { validateUrl } from './validateUrl.js';
+
 export default () => {
-  watchedState.form.url = "";
+  watchedState.form.url = '';
   watchedState.form.valid = true;
   watchedState.form.error = null;
 
   const elements = {
-    form: document.querySelector(".rss-form"),
-    input: document.querySelector("#url-input"),
+    form: document.querySelector('.rss-form'),
+    input: document.querySelector('#url-input'),
     button: document.querySelector('[type="submit"]'),
   };
 
-  elements.form.addEventListener("submit", (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const url = elements.input.value;
 
@@ -20,20 +21,20 @@ export default () => {
         watchedState.form.valid = true;
         watchedState.form.error = null;
         watchedState.form.feeds.push(url);
-        console.log("Форма валидна, отправка данных", url);
+        console.log('Форма валидна, отправка данных', url);
         console.log(watchedState);
         elements.form.reset();
         elements.input.focus();
       })
       .catch((error) => {
         watchedState.form.valid = false;
-        watchedState.form.error = "Ссылка должна быть валидным URL";
-        console.error("Ошибка валидации:", error.message);
+        watchedState.form.error = 'Ссылка должна быть валидным URL';
+        console.error('Ошибка валидации:', error.message);
         console.log(watchedState);
       });
   });
 
-  elements.input.addEventListener("input", (e) => {
+  elements.input.addEventListener('input', (e) => {
     watchedState.form.url = e.target.value;
   });
 };
