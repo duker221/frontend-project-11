@@ -8,6 +8,7 @@
   },
   "author": "",
   "license": "ISC",
+  "type": "module",
   "devDependencies": {
     "@babel/core": "^7.24.3",
     "@babel/eslint-parser": "^7.24.1",
@@ -36,6 +37,8 @@
     "workbox-webpack-plugin": "^7.0.0"
   },
   "dependencies": {
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "on-change": "^5.0.1",
+    "yup": "^1.4.0"
   }
 }
