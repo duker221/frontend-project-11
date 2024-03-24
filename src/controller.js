@@ -1,10 +1,27 @@
 import { watchedState } from './state.js';
 import { validateUrl } from './validateUrl.js';
+import ru from './locales/ru.js';
+import i18next from 'i18next';
+import * as yup from 'yup';
 
-export default () => {
+export default async () => {
+  yup.setLocale({
+    string: {
+      url: 'validError',
+    },
+  });
+
+  const i18nextInstance = i18next.createInstance();
+  i18nextInstance.init({
+    lng: 'ru',
+    resources: {
+      ru,
+    },
+  });
+
   watchedState.form.url = '';
   watchedState.form.valid = true;
-  watchedState.form.error = null;
+  watchedState.form.errors = [];
 
   const elements = {
     form: document.querySelector('.rss-form'),
@@ -19,7 +36,7 @@ export default () => {
     validateUrl(url, watchedState)
       .then(() => {
         watchedState.form.valid = true;
-        watchedState.form.error = null;
+        watchedState.form.errors = [];
         watchedState.form.feeds.push(url);
         console.log('Форма валидна, отправка данных', url);
         console.log(watchedState);
@@ -28,7 +45,7 @@ export default () => {
       })
       .catch((error) => {
         watchedState.form.valid = false;
-        watchedState.form.error = 'Ссылка должна быть валидным URL';
+        watchedState.form.errors.push(i18nextInstance.t('validError'));
         console.error('Ошибка валидации:', error.message);
         console.log(watchedState);
       });

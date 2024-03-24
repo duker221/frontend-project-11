@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import { render } from './view.js';
+import { renderErrors } from './view.js';
 
 const state = {
   form: {
@@ -11,8 +11,11 @@ const state = {
 };
 
 const watchedState = onChange(state, (path, value, previousValue) => {
-  if (path.startsWith('form')) {
-    render(watchedState);
+  if (path === 'form') {
+    renderErrors(watchedState);
+  }
+  if (path === 'form.errors') {
+    renderErrors(watchedState);
   }
 });
 

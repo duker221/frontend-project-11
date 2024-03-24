@@ -1,4 +1,4 @@
-const render = (state) => {
+const renderErrors = (state) => {
   const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
   const feedback = document.querySelector('.feedback');
@@ -9,8 +9,8 @@ const render = (state) => {
     feedback.textContent = '';
   } else {
     input.classList.add('is-invalid');
-    feedback.textContent = state.form.error;
+    feedback.textContent = state.form.errors.join('\n');
   }
 };
 
-export { render };
+export { renderErrors };
