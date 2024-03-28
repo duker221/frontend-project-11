@@ -1,25 +1,34 @@
 import { object, string } from 'yup';
 
+const state = {
+  form: {
+    url: '',
+    valid: true, //
+    errors: [],
+  },
+  rssContent: {
+    feeds: [],
+  },
+};
+
 const urlSchema = object({
   url: string().url().required(),
 });
 
 const validateUrl = (url, state) =>
   new Promise((resolve, reject) => {
-    const isDuplicate = state.form.feeds.includes(url);
-
-    if (isDuplicate) {
-      reject(new Error('URL уже существует в списке фидов'));
-    } else {
-      urlSchema
-        .validate({ url })
-        .then(() => {
-          resolve('Success!');
-        })
-        .catch((e) => {
-          reject(new Error(e.message));
-        });
+    const { validUrls } = state.form;
+    if (validUrls.includes(url)) {
+      reject(new Error(i18nextInstance.t('duplicateUrl')));
     }
+    urlSchema
+      .validate({ url })
+      .then(() => {
+        resolve('Success!');
+      })
+      .catch((e) => {
+        reject(new Error(e.message));
+      });
   });
 
 export { validateUrl };

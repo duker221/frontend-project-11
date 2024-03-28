@@ -1,21 +1,23 @@
 import onChange from 'on-change';
-import { renderErrors } from './view.js';
+import { renderInput, renderFeeds } from './view.js';
 
 const state = {
   form: {
     url: '',
-    valid: true,
-    feeds: [],
+    valid: true, //
     errors: [],
+  },
+  rssContent: {
+    feeds: [],
   },
 };
 
 const watchedState = onChange(state, (path, value, previousValue) => {
   if (path === 'form') {
-    renderErrors(watchedState);
+    renderInput(watchedState);
   }
   if (path === 'form.errors') {
-    renderErrors(watchedState);
+    renderInput(watchedState);
   }
 });
 
