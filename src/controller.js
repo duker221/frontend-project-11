@@ -14,9 +14,7 @@ export default async () => {
     },
   });
 
-  const urlSchema = yup.object({
-    url: yup.string().url().required(),
-  });
+  const urlSchema = yup.object({ url: yup.string().url().required() });
 
   const validateUrl = (url, state) =>
     new Promise((resolve, reject) => {
@@ -30,7 +28,7 @@ export default async () => {
           resolve('Success!');
         })
         .catch((e) => {
-          reject(new Error(e.message));
+          reject(e);
         });
     });
 
@@ -44,34 +42,25 @@ export default async () => {
 
   const state = {
     form: {
-      url: '',
-      valid: 'valid',
-      validUrls: [], //
+      valid: 'filling',
+      validUrls: [],
+      validationErrors: [],
     },
     load: {
-      status: '',
+      status: 'waitingData',
     },
     rssContent: {
       feeds: [],
     },
-    errors: [],
   };
 
   const watchedState = onChange(state, (path, value, previousValue) => {
-    if (path === 'form.valid') {
-      renderInput(watchedState, i18nextInstance);
-    }
-    if (path === 'form.validUrls') {
-      renderInput(watchedState, i18nextInstance);
-    }
-    if (path === 'errors') {
+    if (path === 'form.valid' || path === 'form.validationErrors') {
       renderInput(watchedState, i18nextInstance);
     }
     if (path === 'rssContent.feeds') {
-      renderFeeds(watchedState);
-    }
-    if (path === 'rssContent.feeds') {
-      renderPosts(watchedState);
+      renderFeeds(watchedState, i18nextInstance);
+      renderPosts(watchedState, i18nextInstance);
     }
   });
 
@@ -96,13 +85,15 @@ export default async () => {
       .catch((error) => {
         switch (error.message) {
           case i18nextInstance.t('duplicateUrl'):
-            watchedState.errors.unshift(i18nextInstance.t('duplicateUrl'));
+            watchedState.form.validationErrors.unshift(
+              i18nextInstance.t('duplicateUrl'),
+            );
             break;
           case i18nextInstance.t('validError'):
-            watchedState.errors.unshift(i18nextInstance.t('validError'));
+            watchedState.form.validationErrors.unshift(
+              i18nextInstance.t('validError'),
+            );
             break;
-          default:
-            watchedState.errors.unshift(i18nextInstance.t('validError'));
         }
         watchedState.form.valid = 'invalid';
         console.error('Ошибка валидации:', error.message);
