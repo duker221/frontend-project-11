@@ -1,9 +1,9 @@
-import ru from './locales/ru.js';
 import i18next from 'i18next';
 import * as yup from 'yup';
-import { loadFeeds } from './utils/loadFeeds.js';
-import { parseData } from './utils/parseData.js';
 import onChange from 'on-change';
+import ru from './locales/ru.js';
+import { loadFeeds, updateFeeds } from './utils/loadFeeds.js';
+import { parseData } from './utils/parseData.js';
 import { renderInput, renderFeeds, renderPosts } from './view.js';
 
 export default async () => {
