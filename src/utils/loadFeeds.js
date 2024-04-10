@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import parseData from './parseData.js';
+import { parseData } from './parseData.js';
 
 const loadFeeds = (url, state) => {
   const proxyUrl = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
@@ -62,4 +62,4 @@ const loadFeeds = (url, state) => {
     });
 };
 
-export default loadFeeds;
+export { loadFeeds };

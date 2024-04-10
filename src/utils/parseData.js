@@ -1,14 +1,14 @@
 const parseData = (data) => {
   const parser = new DOMParser();
 
-  const parsedData = parser.parseFromString(data, 'text/xml');
+  const parseData = parser.parseFromString(data, 'text/xml');
 
   const errors = parseData.querySelector('parsererror');
   if (errors) {
     throw new Error(`Parse Error: ${errors.textContent}`);
   }
 
-  return parsedData;
+  return parseData;
 };
 
-export default parseData;
+export { parseData };
