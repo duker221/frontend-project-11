@@ -10,5 +10,6 @@ export default {
     posts: 'Посты',
     feeds: 'Фиды',
     notRss: 'Ресурс не содержит валидный RSS',
+    errorNetwork: 'Ошибка сети',
   },
 };

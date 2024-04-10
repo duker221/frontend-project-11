@@ -6,6 +6,9 @@ const renderInput = (state, i18nextInstance) => {
   const feedback = document.querySelector('.feedback');
   const submitButton = document.querySelector('button[type="submit"]');
 
+  if (state.load.status === 'error') {
+    feedback.textContent = i18nextInstance.t('errorNetwork');
+  }
   switch (state.form.valid) {
     case 'invalid':
       input.classList.add('is-invalid');
@@ -88,31 +91,41 @@ const renderPosts = (state, i18nextInstance) => {
 
   cardBody.appendChild(cardTitle);
 
-  state.rssContent.feeds.forEach((feed) => {
-    feed.posts.forEach((post) => {
-      const listGroupItem = document.createElement('li');
-      listGroupItem.classList.add(
-        'list-group-item',
-        'd-flex',
-        'justify-content-between',
-        'align-items-start',
-        'border-0',
-        'border-end-0',
-      );
+  state.rssContent.posts.forEach((post) => {
+    const isReaded = state.userInterface.watchedPostsId.has(post.id)
+      ? 'fw-normal'
+      : 'fw-bold';
+    const listGroupItem = document.createElement('li');
+    listGroupItem.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+      'border-0',
+      'border-end-0',
+    );
+    const linkId = uniqueId();
+    const listLink = document.createElement('a');
+    listLink.classList.add(isReaded);
 
-      const listLink = document.createElement('a');
-      listLink.classList.add('fw-bold');
-      listLink.setAttribute('target', '_blank');
-      listLink.setAttribute('rel', 'noopener noreferrer');
-      listLink.setAttribute('data-id', uniqueId());
-      listLink.textContent = post.title;
-      listLink.href = post.link;
+    listLink.setAttribute('target', '_blank');
+    listLink.setAttribute('rel', 'noopener noreferrer');
+    listLink.setAttribute('data-id', post.id);
+    listLink.textContent = post.title;
+    listLink.href = post.link;
 
-      listGroupItem.appendChild(listLink);
+    const viewButton = document.createElement('button');
+    viewButton.type = 'button';
+    viewButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    viewButton.setAttribute('data-id', post.id);
+    viewButton.setAttribute('data-bs-toggle', 'modal');
+    viewButton.setAttribute('data-bs-target', '#modal');
+    viewButton.textContent = i18nextInstance.t('buttons.view');
 
-      // Вставляем новый элемент перед первым элементом списка
-      listGroup.insertBefore(listGroupItem, listGroup.firstChild);
-    });
+    listGroupItem.appendChild(listLink);
+    listGroupItem.appendChild(viewButton);
+
+    listGroup.insertBefore(listGroupItem, listGroup.firstChild);
 
     feedCard.appendChild(cardBody);
     feedCard.appendChild(listGroup);
@@ -122,4 +135,26 @@ const renderPosts = (state, i18nextInstance) => {
   postsDiv.appendChild(feedCard);
 };
 
-export { renderInput, renderFeeds, renderPosts };
+const renderModal = (state) => {
+  const modalTitle = document.querySelector('.modal-title');
+  const modalBody = document.querySelector('.modal-body');
+  const modalLinkBtn = document.querySelector('.full-article');
+
+  const selectedPostId = state.userInterface.activePost;
+
+  const activePost = state.rssContent.posts.find(
+    (post) => selectedPostId === post.id,
+  );
+
+  if (activePost) {
+    modalTitle.textContent = activePost.title;
+    modalBody.textContent = activePost.description;
+    modalLinkBtn.setAttribute('href', activePost.link);
+  }
+  console.log(activePost);
+  console.log();
+};
+
+export {
+  renderInput, renderFeeds, renderPosts, renderModal,
+};
