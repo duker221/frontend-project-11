@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import ru from './locales/ru.js';
-import { loadFeeds } from './utils/loadFeeds.js';
+import loadFeeds from './utils/loadFeeds.js';
 import {
   renderInput, renderFeeds, renderPosts, renderModal,
 } from './view.js';
@@ -102,7 +102,7 @@ export default async () => {
               i18nextInstance.t('duplicateUrl'),
             );
             break;
-          case i18nextInstance.t('validError'):
+          case 'validError':
             watchedState.form.validationErrors.unshift(
               i18nextInstance.t('validError'),
             );

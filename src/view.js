@@ -1,7 +1,4 @@
-import { uniqueId } from 'lodash';
-
 const renderInput = (state, i18nextInstance) => {
-  const form = document.querySelector('.rss-form');
   const input = document.querySelector('#url-input');
   const feedback = document.querySelector('.feedback');
   const submitButton = document.querySelector('button[type="submit"]');
@@ -104,7 +101,6 @@ const renderPosts = (state, i18nextInstance) => {
       'border-0',
       'border-end-0',
     );
-    const linkId = uniqueId();
     const listLink = document.createElement('a');
     listLink.classList.add(isReaded);
 

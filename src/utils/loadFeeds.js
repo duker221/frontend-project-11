@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import { parseData } from './parseData.js';
+import parseData from './parseData.js';
 
 const loadFeeds = (url, state) => {
   const proxyUrl = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
@@ -51,7 +51,7 @@ const loadFeeds = (url, state) => {
     })
     .catch((error) => {
       state.load.status = 'error';
-      // state.form.valid = 'error';
+      state.form.valid = 'error';
       state.form.validationErrors.push('Ошибка загрузки данных');
       console.error(`Error: ${error.message}`);
     })
@@ -62,4 +62,4 @@ const loadFeeds = (url, state) => {
     });
 };
 
-export { loadFeeds };
+export default loadFeeds;
