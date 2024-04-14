@@ -109,11 +109,15 @@ export default async () => {
               i18nextInstance.t('validError'),
             );
             break;
-          default:
+          case 'notRss':
             watchedState.form.validationErrors.unshift(
               i18nextInstance.t('notRss'),
             );
             break;
+          default:
+            watchedState.form.validationErrors.unshift(
+              i18nextInstance.t('errorNetwork'),
+            );
         }
         watchedState.form.valid = 'invalid';
         console.error('Ошибка валидации:', error.message);

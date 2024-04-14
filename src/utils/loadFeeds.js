@@ -60,9 +60,16 @@ const loadFeeds = (url, state, i18nextInstance) => {
       }
     })
     .catch((error) => {
-      state.load.status = 'invalid';
-      state.form.valid = 'invalid';
-      state.form.validationErrors.push(i18nextInstance.t('notRss'));
+      if (!error.response && error.message === 'Network Error') {
+        state.load.status = 'errorNetwork';
+        state.form.valid = 'invalid';
+        state.form.validationErrors.unshift(i18nextInstance.t('errorNetwork'));
+      } else {
+        console.log(error.response || error.message);
+        state.load.status = 'error';
+        state.form.valid = 'invalid';
+        state.form.validationErrors.unshift(i18nextInstance.t('notRss'));
+      }
     });
 };
 
