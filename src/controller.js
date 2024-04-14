@@ -3,7 +3,9 @@ import * as yup from 'yup';
 import onChange from 'on-change';
 import ru from './locales/ru.js';
 import { loadFeeds } from './utils/loadFeeds.js';
-import { renderInput, renderFeeds, renderPosts, renderModal } from './view.js';
+import {
+  renderInput, renderFeeds, renderPosts, renderModal,
+} from './view.js';
 
 export default async () => {
   const i18nextInstance = i18next.createInstance();
@@ -25,21 +27,20 @@ export default async () => {
 
   const urlSchema = yup.object({ url: yup.string().url().required() });
 
-  const validateUrl = (url, state) =>
-    new Promise((resolve, reject) => {
-      const { validUrls } = state.form;
-      if (validUrls.includes(url)) {
-        reject(new Error(i18nextInstance.t('duplicateUrl')));
-      }
-      urlSchema
-        .validate({ url })
-        .then(() => {
-          resolve('Success!');
-        })
-        .catch((e) => {
-          reject(e);
-        });
-    });
+  const validateUrl = (url, state) => new Promise((resolve, reject) => {
+    const { validUrls } = state.form;
+    if (validUrls.includes(url)) {
+      reject(new Error(i18nextInstance.t('duplicateUrl')));
+    }
+    urlSchema
+      .validate({ url })
+      .then(() => {
+        resolve('Success!');
+      })
+      .catch((e) => {
+        reject(e);
+      });
+  });
 
   const state = {
     form: {

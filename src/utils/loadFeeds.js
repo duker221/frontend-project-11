@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import { parseData } from './parseData.js';
+import parseData from './parseData.js';
 
 let timerId;
 
