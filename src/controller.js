@@ -18,6 +18,9 @@ export default async () => {
       url: 'validError',
       success: 'success',
     },
+    mixed: {
+      notOneOf: 'duplicateUrl',
+    },
   });
 
   const urlSchema = yup.object({ url: yup.string().url().required() });
@@ -91,7 +94,7 @@ export default async () => {
         watchedState.form.valid = 'valid';
         watchedState.form.validUrls.push(url);
         console.log('Форма валидна, отправка данных', url);
-        loadFeeds(url, watchedState);
+        loadFeeds(url, watchedState, i18nextInstance);
         console.log(watchedState);
       })
       .catch((error) => {
@@ -104,6 +107,11 @@ export default async () => {
           case 'validError':
             watchedState.form.validationErrors.unshift(
               i18nextInstance.t('validError'),
+            );
+            break;
+          default:
+            watchedState.form.validationErrors.unshift(
+              i18nextInstance.t('notRss'),
             );
             break;
         }

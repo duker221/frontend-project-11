@@ -2,7 +2,9 @@ import axios from 'axios';
 import { uniqueId } from 'lodash';
 import { parseData } from './parseData.js';
 
-const loadFeeds = (url, state) => {
+let timerId;
+
+const loadFeeds = (url, state, i18nextInstance) => {
   const proxyUrl = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
   state.load.status = 'waitingResponse';
   state.form.valid = 'waitingResponse';
@@ -49,16 +51,18 @@ const loadFeeds = (url, state) => {
       state.form.valid = 'filling';
       console.log(state);
     })
-    .catch((error) => {
-      state.load.status = 'error';
-      state.form.valid = 'error';
-      state.form.validationErrors.push('Ошибка загрузки данных');
-      console.error(`Error: ${error.message}`);
-    })
-    .finally(() => {
-      setTimeout(() => {
+    .then(() => {
+      timerId = setTimeout(() => {
         loadFeeds(url, state);
       }, 5000);
+      if (state.load.status === 'error') {
+        clearTimeout(timerId);
+      }
+    })
+    .catch((error) => {
+      state.load.status = 'invalid';
+      state.form.valid = 'invalid';
+      state.form.validationErrors.push(i18nextInstance.t('notRss'));
     });
 };
 
