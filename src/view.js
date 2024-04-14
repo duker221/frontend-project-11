@@ -3,11 +3,6 @@ const renderInput = (state, i18nextInstance) => {
   const feedback = document.querySelector('.feedback');
   const submitButton = document.querySelector('button[type="submit"]');
 
-  // if (state.form.valid === 'error') {
-  //   feedback.textContent = i18nextInstance.t('notRss');
-  //   submitButton.disabled = false;
-  //   input.readOnly = false;
-  // }
   switch (state.form.valid) {
     case 'invalid':
       input.classList.add('is-invalid');

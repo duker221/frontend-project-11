@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { uniqueId } from 'lodash';
-import parseData from './parseData.js';
+import { parseData } from './parseData.js';
 
 let timerId;
 
@@ -15,6 +15,7 @@ const loadFeeds = (url, state, i18nextInstance) => {
       if (response.status >= 200 && response.status <= 299) {
         const { data } = response;
         const parsedData = parseData(data.contents);
+        console.log(parsedData);
 
         const feed = {
           title: parsedData.querySelector('title').textContent,
