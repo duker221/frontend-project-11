@@ -2,12 +2,13 @@ const renderInput = (state, i18nextInstance) => {
   const input = document.querySelector('#url-input');
   const feedback = document.querySelector('.feedback');
   const submitButton = document.querySelector('button[type="submit"]');
+  const [lastValidationError] = state.form.validationErrors;
 
   switch (state.form.valid) {
     case 'invalid':
       input.classList.add('is-invalid');
       feedback.classList.add('text-danger');
-      feedback.textContent = state.form.validationErrors[0];
+      feedback.textContent = lastValidationError;
       submitButton.disabled = false;
       input.readOnly = false;
       break;
@@ -24,6 +25,14 @@ const renderInput = (state, i18nextInstance) => {
       input.readOnly = false;
       input.value = '';
       input.focus();
+      break;
+    default:
+      submitButton.disabled = false;
+      input.readOnly = false;
+      input.classList.remove('is-invalid');
+      feedback.classList.remove('text-danger', 'text-success');
+      feedback.textContent = '';
+      break;
   }
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import axios from 'axios';
 import { uniqueId } from 'lodash';
 import { parseData } from './parseData.js';
