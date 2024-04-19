@@ -159,4 +159,6 @@ const renderModal = (state) => {
   }
 };
 
-export { renderInput, renderFeeds, renderPosts, renderModal };
+export {
+  renderInput, renderFeeds, renderPosts, renderModal,
+};

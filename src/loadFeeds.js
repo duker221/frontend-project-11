@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import axios from 'axios';
-import { uniq, uniqueId } from 'lodash';
+import { uniqueId } from 'lodash';
 import { parseData } from './parseData.js';
 
 let timerId;
@@ -18,7 +18,7 @@ const loadFeeds = (url, state, i18nextInstance) => {
         const { feed, posts } = parseData(data.contents);
 
         const isUniqueFeed = !state.rssContent.feeds.some(
-          (el) => el.title === el.title,
+          (el) => el.title === feed.title,
         );
         if (isUniqueFeed) {
           state.rssContent.feeds.push(feed);
