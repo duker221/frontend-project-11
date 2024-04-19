@@ -2,10 +2,9 @@ import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import ru from './locales/ru.js';
-import { loadFeeds } from './utils/loadFeeds.js';
-import {
-  renderInput, renderFeeds, renderPosts, renderModal,
-} from './view.js';
+import { loadFeeds } from './loadFeeds.js';
+import { renderInput, renderFeeds, renderPosts, renderModal } from './view.js';
+import 'bootstrap';
 
 export default async () => {
   const i18nextInstance = i18next.createInstance();
@@ -27,20 +26,21 @@ export default async () => {
 
   const urlSchema = yup.object({ url: yup.string().url().required() });
 
-  const validateUrl = (url, state) => new Promise((resolve, reject) => {
-    const { validUrls } = state.form;
-    if (validUrls.includes(url)) {
-      reject(new Error(i18nextInstance.t('duplicateUrl')));
-    }
-    urlSchema
-      .validate({ url })
-      .then(() => {
-        resolve('Success!');
-      })
-      .catch((e) => {
-        reject(e);
-      });
-  });
+  const validateUrl = (url, state) =>
+    new Promise((resolve, reject) => {
+      const { validUrls } = state.form;
+      if (validUrls.includes(url)) {
+        reject(new Error(i18nextInstance.t('duplicateUrl')));
+      }
+      urlSchema
+        .validate({ url })
+        .then(() => {
+          resolve('Success!');
+        })
+        .catch((e) => {
+          reject(e);
+        });
+    });
 
   const state = {
     form: {
@@ -94,9 +94,7 @@ export default async () => {
       .then(() => {
         watchedState.form.valid = 'valid';
         watchedState.form.validUrls.push(url);
-        console.log('Форма валидна, отправка данных', url);
         loadFeeds(url, watchedState, i18nextInstance);
-        console.log(watchedState);
       })
       .catch((error) => {
         switch (error.message) {
@@ -122,13 +120,11 @@ export default async () => {
         }
         watchedState.form.valid = 'invalid';
         console.error('Ошибка валидации:', error.message);
-        console.log(watchedState);
       });
   });
 
   elements.posts.addEventListener('click', (e) => {
     const clickId = e.target.dataset.id;
-    console.log(clickId);
     if (clickId) {
       watchedState.userInterface.activePost = clickId;
       watchedState.userInterface.watchedPostsId.add(clickId);

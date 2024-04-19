@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import axios from 'axios';
-import { uniqueId } from 'lodash';
+import { uniq, uniqueId } from 'lodash';
 import { parseData } from './parseData.js';
 
 let timerId;
@@ -13,35 +13,27 @@ const loadFeeds = (url, state, i18nextInstance) => {
   axios
     .get(proxyUrl)
     .then((response) => {
-      if (response.status >= 200 && response.status <= 299) {
+      if (response.status >= 200 && response.status < 300) {
         const { data } = response;
-        const parsedData = parseData(data.contents);
-        console.log(parsedData);
+        const { feed, posts } = parseData(data.contents);
 
-        const feed = {
-          title: parsedData.querySelector('title').textContent,
-          description: parsedData.querySelector('description').textContent,
-        };
         const isUniqueFeed = !state.rssContent.feeds.some(
-          (uniqFeed) => uniqFeed.title === feed.title,
+          (el) => el.title === el.title,
         );
         if (isUniqueFeed) {
           state.rssContent.feeds.push(feed);
         }
-        const items = parsedData.querySelectorAll('item');
-        items.forEach((item) => {
-          const link = item.querySelector('link').textContent;
-          const isUnique = !state.rssContent.posts.some(
-            (post) => post.link === link,
+
+        posts.forEach((post) => {
+          const isUniquePost = !state.rssContent.posts.some(
+            (p) => p.link === post.link,
           );
-          if (isUnique) {
-            const post = {
-              title: item.querySelector('title').textContent,
-              link,
-              description: item.querySelector('description').textContent,
+          if (isUniquePost) {
+            const newPost = {
+              ...post,
               id: uniqueId(),
             };
-            state.rssContent.posts.push(post);
+            state.rssContent.posts.push(newPost);
           }
         });
       } else {
@@ -51,7 +43,6 @@ const loadFeeds = (url, state, i18nextInstance) => {
     .then(() => {
       state.load.status = 'waitingData';
       state.form.valid = 'filling';
-      console.log(state);
     })
     .then(() => {
       timerId = setTimeout(() => {
@@ -67,7 +58,6 @@ const loadFeeds = (url, state, i18nextInstance) => {
         state.form.valid = 'invalid';
         state.form.validationErrors.unshift(i18nextInstance.t('errorNetwork'));
       } else {
-        console.log(error.response || error.message);
         state.load.status = 'error';
         state.form.valid = 'invalid';
         state.form.validationErrors.unshift(i18nextInstance.t('notRss'));

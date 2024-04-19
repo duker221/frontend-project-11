@@ -79,62 +79,66 @@ const renderFeeds = (state, i18nextInstance) => {
 
 const renderPosts = (state, i18nextInstance) => {
   const postsDiv = document.querySelector('.posts');
-  const feedCard = document.createElement('div');
-  feedCard.classList.add('card', 'border-0');
+  postsDiv.innerHTML = '';
+  if (state.rssContent.posts.length > 0) {
+    const feedCard = document.createElement('div');
+    feedCard.classList.add('card', 'border-0');
 
-  const cardBody = document.createElement('div');
-  cardBody.classList.add('card-body');
+    const cardBody = document.createElement('div');
+    cardBody.classList.add('card-body');
 
-  const cardTitle = document.createElement('h2');
-  cardTitle.classList.add('card-title', 'h4');
-  cardTitle.textContent = i18nextInstance.t('posts');
+    const cardTitle = document.createElement('h2');
+    cardTitle.classList.add('card-title', 'h4');
+    cardTitle.textContent = i18nextInstance.t('posts');
 
-  const listGroup = document.createElement('ul');
-  listGroup.classList.add('list-group', 'border-0', 'rounded-0');
+    const listGroup = document.createElement('ul');
+    listGroup.classList.add('list-group', 'border-0', 'rounded-0');
 
-  cardBody.appendChild(cardTitle);
-
-  state.rssContent.posts.forEach((post) => {
-    const isReaded = state.userInterface.watchedPostsId.has(post.id)
-      ? 'fw-normal'
-      : 'fw-bold';
-    const listGroupItem = document.createElement('li');
-    listGroupItem.classList.add(
-      'list-group-item',
-      'd-flex',
-      'justify-content-between',
-      'align-items-start',
-      'border-0',
-      'border-end-0',
-    );
-    const listLink = document.createElement('a');
-    listLink.classList.add(isReaded);
-
-    listLink.setAttribute('target', '_blank');
-    listLink.setAttribute('rel', 'noopener noreferrer');
-    listLink.setAttribute('data-id', post.id);
-    listLink.textContent = post.title;
-    listLink.href = post.link;
-
-    const viewButton = document.createElement('button');
-    viewButton.type = 'button';
-    viewButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    viewButton.setAttribute('data-id', post.id);
-    viewButton.setAttribute('data-bs-toggle', 'modal');
-    viewButton.setAttribute('data-bs-target', '#modal');
-    viewButton.textContent = i18nextInstance.t('buttons.view');
-
-    listGroupItem.appendChild(listLink);
-    listGroupItem.appendChild(viewButton);
-
-    listGroup.insertBefore(listGroupItem, listGroup.firstChild);
-
+    cardBody.appendChild(cardTitle);
     feedCard.appendChild(cardBody);
     feedCard.appendChild(listGroup);
-  });
 
-  postsDiv.innerHTML = '';
-  postsDiv.appendChild(feedCard);
+    const fragment = document.createDocumentFragment();
+
+    state.rssContent.posts.forEach((post) => {
+      const isReaded = state.userInterface.watchedPostsId.has(post.id)
+        ? 'fw-normal'
+        : 'fw-bold';
+      const listGroupItem = document.createElement('li');
+      listGroupItem.classList.add(
+        'list-group-item',
+        'd-flex',
+        'justify-content-between',
+        'align-items-start',
+        'border-0',
+        'border-end-0',
+      );
+      const listLink = document.createElement('a');
+      listLink.classList.add(isReaded);
+
+      listLink.setAttribute('target', '_blank');
+      listLink.setAttribute('rel', 'noopener noreferrer');
+      listLink.setAttribute('data-id', post.id);
+      listLink.textContent = post.title;
+      listLink.href = post.link;
+
+      const viewButton = document.createElement('button');
+      viewButton.type = 'button';
+      viewButton.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+      viewButton.setAttribute('data-id', post.id);
+      viewButton.setAttribute('data-bs-toggle', 'modal');
+      viewButton.setAttribute('data-bs-target', '#modal');
+      viewButton.textContent = i18nextInstance.t('buttons.view');
+
+      listGroupItem.appendChild(listLink);
+      listGroupItem.appendChild(viewButton);
+
+      fragment.appendChild(listGroupItem);
+    });
+
+    listGroup.appendChild(fragment);
+    postsDiv.appendChild(feedCard);
+  }
 };
 
 const renderModal = (state) => {
@@ -153,10 +157,6 @@ const renderModal = (state) => {
     modalBody.textContent = activePost.description;
     modalLinkBtn.setAttribute('href', activePost.link);
   }
-  console.log(activePost);
-  console.log();
 };
 
-export {
-  renderInput, renderFeeds, renderPosts, renderModal,
-};
+export { renderInput, renderFeeds, renderPosts, renderModal };
