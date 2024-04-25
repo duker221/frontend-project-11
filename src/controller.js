@@ -6,7 +6,6 @@ import { loadFeeds, updateContent } from './loadFeeds.js';
 import {
   renderInput, renderFeeds, renderPosts, renderModal,
 } from './view.js';
-import 'bootstrap';
 
 export default async () => {
   const i18nextInstance = i18next.createInstance();

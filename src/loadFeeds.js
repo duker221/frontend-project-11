@@ -28,7 +28,6 @@ const loadFeeds = (url, state, i18nextInstance) => {
         if (isUniqueFeed) {
           feed.url = url;
           feed.id = uniqueId();
-          console.log(feed);
           state.rssContent.feeds.push(feed);
         }
 
@@ -44,7 +43,6 @@ const loadFeeds = (url, state, i18nextInstance) => {
             state.rssContent.posts.push(newPost);
           }
         });
-        console.log(state);
       } else {
         throw new Error('Network response was not ok.');
       }
@@ -72,25 +70,19 @@ const updateContent = (state) => {
     return;
   }
   const { feeds } = state.rssContent;
-  console.log(state.rssContent.feeds);
-  console.log(123);
-  const promises = feeds.map((feed) => {
-    axios
-      .get(getProxiedUrl(feed.url))
-      .then((response) => {
-        console.log(response);
-        const { posts } = parseData(response.data.contents);
-
-        const oldPosts = state.rssContent.posts.map((post) => post.link);
-        const newPosts = posts
-          .filter((post) => !oldPosts.includes(post.link))
-          .map((post) => ({ ...post, id: uniqueId() }));
-        state.rssContent.posts.unshift(...newPosts);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  });
+  const promises = feeds.map((feed) => axios
+    .get(getProxiedUrl(feed.url))
+    .then((response) => {
+      const { posts } = parseData(response.data.contents);
+      const oldPosts = state.rssContent.posts.map((post) => post.link);
+      const newPosts = posts
+        .filter((post) => !oldPosts.includes(post.link))
+        .map((post) => ({ ...post, id: uniqueId() }));
+      state.rssContent.posts.unshift(...newPosts);
+    })
+    .catch((e) => {
+      console.log(e);
+    }));
   Promise.all(promises).then(() => setTimeout(() => updateContent(state), 5000));
 };
 
