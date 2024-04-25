@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import * as yup from 'yup';
 import onChange from 'on-change';
 import ru from './locales/ru.js';
-import { loadFeeds } from './loadFeeds.js';
+import { loadFeeds, updateContent } from './loadFeeds.js';
 import {
   renderInput, renderFeeds, renderPosts, renderModal,
 } from './view.js';
@@ -97,6 +97,7 @@ export default async () => {
         watchedState.form.validUrls.push(url);
         loadFeeds(url, watchedState, i18nextInstance);
       })
+
       .catch((error) => {
         switch (error.message) {
           case i18nextInstance.t('duplicateUrl'):
@@ -120,7 +121,6 @@ export default async () => {
             );
         }
         watchedState.form.valid = 'invalid';
-        console.error('Ошибка валидации:', error.message);
       });
   });
 
@@ -131,4 +131,5 @@ export default async () => {
       watchedState.userInterface.watchedPostsId.add(clickId);
     }
   });
+  updateContent(watchedState);
 };

@@ -3,10 +3,15 @@ import axios from 'axios';
 import { uniqueId } from 'lodash';
 import { parseData } from './parseData.js';
 
-let timerId;
+const getProxiedUrl = (link) => {
+  const url = new URL('https://allorigins.hexlet.app/get');
+  url.searchParams.append('disableCache', 'true');
+  url.searchParams.append('url', link);
+  return url.toString();
+};
 
 const loadFeeds = (url, state, i18nextInstance) => {
-  const proxyUrl = `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  const proxyUrl = getProxiedUrl(url);
   state.load.status = 'waitingResponse';
   state.form.valid = 'waitingResponse';
 
@@ -21,6 +26,9 @@ const loadFeeds = (url, state, i18nextInstance) => {
           (el) => el.title === feed.title,
         );
         if (isUniqueFeed) {
+          feed.url = url;
+          feed.id = uniqueId();
+          console.log(feed);
           state.rssContent.feeds.push(feed);
         }
 
@@ -36,6 +44,7 @@ const loadFeeds = (url, state, i18nextInstance) => {
             state.rssContent.posts.push(newPost);
           }
         });
+        console.log(state);
       } else {
         throw new Error('Network response was not ok.');
       }
@@ -43,14 +52,6 @@ const loadFeeds = (url, state, i18nextInstance) => {
     .then(() => {
       state.load.status = 'waitingData';
       state.form.valid = 'filling';
-    })
-    .then(() => {
-      timerId = setTimeout(() => {
-        loadFeeds(url, state);
-      }, 5000);
-      if (state.load.status === 'error') {
-        clearTimeout(timerId);
-      }
     })
     .catch((error) => {
       if (!error.response && error.message === 'Network Error') {
@@ -65,4 +66,32 @@ const loadFeeds = (url, state, i18nextInstance) => {
     });
 };
 
-export { loadFeeds };
+const updateContent = (state) => {
+  if (state.rssContent.feeds.length === 0) {
+    setTimeout(() => updateContent(state), 5000);
+    return;
+  }
+  const { feeds } = state.rssContent;
+  console.log(state.rssContent.feeds);
+  console.log(123);
+  const promises = feeds.map((feed) => {
+    axios
+      .get(getProxiedUrl(feed.url))
+      .then((response) => {
+        console.log(response);
+        const { posts } = parseData(response.data.contents);
+
+        const oldPosts = state.rssContent.posts.map((post) => post.link);
+        const newPosts = posts
+          .filter((post) => !oldPosts.includes(post.link))
+          .map((post) => ({ ...post, id: uniqueId() }));
+        state.rssContent.posts.unshift(...newPosts);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  });
+  Promise.all(promises).then(() => setTimeout(() => updateContent(state), 5000));
+};
+
+export { loadFeeds, updateContent };
